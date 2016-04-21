@@ -1,0 +1,29 @@
+# This is a simple list of the HTTP URLs that have been observed during the use of the Android app to
+# connect to a BlackVue camera directly.
+#
+# Note that the Cloud connectivity is different; the URLs in this file have to be accessed via a wifi
+# client connected directly to the camera.
+#
+# The camera appears to take IP address 10.99.77.1 and present an address within 10.99.77.0/24 to the client
+# - at least on my camera - please change this if you observe otherwise.
+# Only one wifi/DHCP client can connect at any one time.
+
+# Alive check - confirm BlackVue version
+http://10.99.77.1/Config/version.bin
+
+# Config file
+http://10.99.77.1/Config/config.ini
+
+# Video file listing (filename format n:{URL},s:1000000 - need to work out what this means!)
+http://10.99.77.1/blackvue_vod.cgi
+
+# Video and metadata file for download via HTTP
+# (note .thm file doesn't seem to do anything; have yet to find GPS/G-force data)
+http://10.99.77.1/Record/{filename}.mp4
+http://10.99.77.1/Record/{filename}.thm
+
+# Video on demand - returns a constantly refreshing JPEG stream
+# - front camera
+http://10.99.77.1/blackvue_live.cgi
+# - rear camera
+http://10.99.77.1/blackvue_live.cgi?direction=R
