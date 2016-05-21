@@ -12,4 +12,4 @@ BASE_URL=http://{URL}:{PORT}
 # {get download of folder structure} | {look for 'Record' to weed out file names} |
 # {remove the other fields in csv} | {get rid of the N: prefix} | {Append URL back in} |
 # {Download these files, resuming and not replacing if we already have the file}
-wget $BASE_URL/blackvue_vod.cgi -q -O - | grep Record | awk -F, '{print $1}' | awk -F: '{print "$BASE_URL"$2}' | xargs -i wget -q -c -N '{}'
+wget $BASE_URL/blackvue_vod.cgi -q -O - | grep Record | awk -F, '{print $1}' | awk -F: '{print $2}' | xargs -i wget -q -c -N $BASE_URL'{}'
