@@ -16,6 +16,8 @@ http://10.99.77.1/Config/config.ini
 
 # Video file listing (filename format n:{URL},s:1000000 - need to work out what this means!)
 http://10.99.77.1/blackvue_vod.cgi
+http://10.99.77.1/blackvue_vod.cgi?path=d:/Record/ # the default
+http://10.99.77.1/blackvue_vod.cgi?path=d:/        # see what else exists, only directories and .mp4 files 
 
 # Video and metadata file for download via HTTP
 # (note .thm file doesn't seem to do anything; have yet to find GPS/G-force data)
