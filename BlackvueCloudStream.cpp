@@ -340,27 +340,40 @@ int main(int argc, char * argv[])
 
     if (argc < 2)
     {
-        printf("Usage: BlackvueCloudStream.exe <email> <password> [channel]\n");
-        printf("where channel may be 1 (front) or 2 (rear)\n\n");
+        printf("Usage: BlackvueCloudStream.exe [email=...] [password=...] [ch=1|2] [my|bookmark|shared]\n\n");
     }
 
-    if (argc > 1)
+    int list_index = 0;
+    int channel = 1;
+
+    for (int i=1; i<argc; ++i)
     {
-        email.assign(argv[1]);
+        char *s = argv[i];
+        if (strcmp(s, "bookmark") == 0)
+        {
+            list_index = 1;
+        }
+        else if (strcmp(s, "shared") == 0)
+        {
+            list_index = 2;
+        }
+        else if (strncmp(s, "email=", 6) == 0)
+        {
+            email.assign(&s[6]);
+        }
+        else if (strncmp(s, "passwd=", 7) == 0)
+        {
+            passwd.assign(&s[7]);
+        }
+        else if (strncmp(s, "ch=", 3) == 0)
+        {
+            channel = atoi(&s[3]);
+        }
     }
-    if (argc > 2)
-    {
-        passwd.assign(argv[2]);
-    }
+
     if (email.empty() || passwd.empty())
     {
         return 1;
-    }
-
-    int channel = 1;
-    if (argc > 3)
-    {
-        channel = atoi(argv[3]);
     }
 
     std::string user_token = get_user_token();
@@ -370,13 +383,16 @@ int main(int argc, char * argv[])
     }
     if (!user_token.empty())
     {
-        char body[8192];
-        sprintf_s(body, sizeof(body), "email=%s&user_token=%s", email.c_str(), user_token.c_str());
+        char body_list[8192];
+        sprintf_s(body_list, sizeof(body_list), "email=%s&user_token=%s", email.c_str(), user_token.c_str());
 
         int status;
-        // "/BCS/device_bookmark_list.php"
-        // "/BCS/device_shared_bk_list.php"
-        std::string res = request(NULL, "/BCS/device_list.php", body, false, &status);
+        char * list_url[3] = {
+            "/BCS/device_list.php",
+            "/BCS/device_bookmark_list.php",
+            "/BCS/device_shared_bk_list.php"
+        };
+        std::string res = request(NULL, list_url[list_index], body_list, false, &status);
         if (status == 200)
         {
             std::string resultcode = get_json_value(res, "resultcode");
@@ -386,7 +402,7 @@ int main(int argc, char * argv[])
                 user_token = login(email.c_str(), passwd.c_str());
                 if (!user_token.empty())
                 {
-                    res = request(NULL, "/BCS/device_list.php", body, false, &status);
+                    res = request(NULL, list_url[list_index], body_list, false, &status);
                 }
             }
         }
